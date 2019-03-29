@@ -8,9 +8,20 @@
 
 import UIKit
 
+
+
 class ToDoTableViewController: UITableViewController {
     
     var todos = [ToDo]()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        if let savedToDos = ToDo.loadToDos() {
+            todos = savedToDos
+        } else {
+            todos = ToDo.loadSampleToDos()
+        }
+    }
 
     override func tableView(_ tableView: UITableView,
                             numberOfRowsInSection section: Int) -> Int {
@@ -27,6 +38,8 @@ class ToDoTableViewController: UITableViewController {
         cell.textLabel?.text = todo.title
         return cell
         }
+    
+  
     }
     
 
