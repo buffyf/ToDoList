@@ -14,6 +14,29 @@ class ToDoTableViewController: UITableViewController {
     
     var todos = [ToDo]()
     
+    @IBAction func unwindToToDoList(segue: UIStoryboardSegue) {
+        guard segue.identifier == "saveUnwind" else { return}
+        let sourceViewController = segue.source as!
+        ToDoViewController
+        
+        if let todo = sourceViewController.todo {
+            if let selectedIndexPath =
+                tableView.indexPathForSelectedRow {
+                todos[selectedIndexPath.row] = todo
+                tableView.reloadRows(at: [selectedIndexPath],
+                                     with: .none)
+            } else {
+            let newIndexPath = IndexPath(row: todos.count, section: 0)
+            
+            todos.append(todo)
+            tableView.insertRows(at: [newIndexPath],
+                                 with: .automatic)
+        }
+        
+        }
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         if let savedToDos = ToDo.loadToDos() {
@@ -25,9 +48,7 @@ class ToDoTableViewController: UITableViewController {
         navigationItem.leftBarButtonItem = editButtonItem
     }
     
-    @IBAction func unwindToToDoList(segue: UIStoryboardSegue) {
-        
-    }
+   
 
     override func tableView(_ tableView: UITableView,
                             numberOfRowsInSection section: Int) -> Int {
@@ -50,15 +71,29 @@ class ToDoTableViewController: UITableViewController {
         return true
     }
     
+
+    
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             todos.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showDetails" {
+            let todoViewController = segue.destination
+            as! ToDoViewController
+            let indexPath = tableView.indexPathForSelectedRow!
+            let selectedToDo = todos[indexPath.row]
+            todoViewController.todo = selectedToDo
+        }
+    }
   
     }
     
+
+
 
 
 
